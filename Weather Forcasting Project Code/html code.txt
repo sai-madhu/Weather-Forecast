@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast</title>
+    <link rel="stylesheet" href="output.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-800 text-white h-screen flex justify-center items-center relative">
+    <div class="bg-gray-900 rounded-lg shadow-lg p-6 max-w-4xl w-full">
+        <div class="flex items-center mb-8 w-full flex-wrap">
+      <div class="flex items-center gap-4">
+        <input type="text" id="cityInput" 
+            placeholder="Enter city name" 
+            class="bg-gray-700 text-white placeholder-gray-400 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-60">
+        <button id="searchButton" 
+            class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg">
+            Search
+        </button>
+        <button id="location-btn" 
+            class="ml-4 p-2 rounded-lg hover:bg-gray-600">
+            <i class="fa-solid fa-location-crosshairs text-xl"></i>
+        </button>
+    </div>
+    
+
+        <!-- Weather Forecast Content -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            <div class="md:col-span-2">
+                <h2 class="text-4xl font-semibold" id="city">Delhi</h2>
+                <p class="text-sm text-gray-400" id="rainChance">Chance of rain: 0%</p>
+                <div class="flex items-center mt-4">
+                    <h1 class="text-7xl font-bold" id="temperature">31&#176;</h1>
+                    <div class="ml-4">
+                        <img id="weather-icon" src="./images/sunny.png" alt="Sunny icon" class="w-16 h-16">
+                    </div>
+                </div>
+                <div class="mt-6 bg-gray-800 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-4">Today's Forecast</h3>
+                    <div class="flex justify-between text-center" id="hourly-forecast-container">
+
+
+                        <!-- Hourly forecast will be populated here dynamically -->
+                        <div class="hourly-forecast"> 
+                          <p class="hourly-time">6:00 AM</p>
+                          <img class="hourly-icon" src="./images/cloudy.png" alt="Cloudy">
+                          <p class="hourly-temp">25°C</p> 
+                      </div>
+                      <div class="hourly-forecast"> 
+                          <p class="hourly-time">9:00 AM</p>
+                          <img class="hourly-icon" src="./images/cloudy.png" alt="Partly Cloudy">
+                          <p class="hourly-temp">28°C</p> 
+                      </div>
+                      <div class="hourly-forecast"> 
+                          <p class="hourly-time">12:00 PM</p>
+                          <img class="hourly-icon" src="./images/sunny.png" alt="Sunny">
+                          <p class="hourly-temp">33°C</p> 
+                      </div>
+                      <div class="hourly-forecast"> 
+                          <p class="hourly-time">3:00 PM</p>
+                          <img class="hourly-icon" src="./images/sunny.png" alt="Sunny">
+                          <p class="hourly-temp">34°C</p> 
+                      </div>
+                      <div class="hourly-forecast"> 
+                          <p class="hourly-time">6:00 PM</p>
+                          <img class="hourly-icon" src="./images/clear.png" alt="Clear">
+                          <p class="hourly-temp">32°C</p> 
+                      </div>
+                      <div class="hourly-forecast"> 
+                          <p class="hourly-time">9:00 PM</p>
+                          <img class="hourly-icon" src="./images/cloudy.png" alt="Cloudy">
+                          <p class="hourly-temp">30°C</p> 
+                      </div>
+                    </div>
+                </div>
+                <div class="mt-6 bg-gray-800 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-4">Air Conditions</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <p><i class="fa-regular fa-temperature-three-quarters"></i> Real Feel: <span class="font-bold" id="realFeel">30&#176;</span></p>
+                        <p><i class="fa-solid fa-droplet"></i> Chance of Rain: <span class="font-bold" id="rainChance">0%</span></p>
+                        <p><i class="fa-solid fa-wind"></i> Wind: <span class="font-bold" id="wind">0.2 km/h</span></p>
+                        <p><i class="fa-solid fa-sun"></i> UV Index: <span class="font-bold" id="uvIndex">3</span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-lg pb-12 border-b border-gray-600">
+                <h3 class="text-lg font-semibold mb-4">7-Day Forecast</h3>
+                <ul id="7-day-forecast">
+
+
+                    <!-- 7-day forecast will be populated here dynamically -->
+                    <li class="flex justify-between items-center mb-5"> 
+                      <span class="daily-date">Today</span>
+                      <img class="daily-icon" src="./images/sunny.png" alt="Sunny" style="width: 20px; height: 20px;"> 
+                      <span class="daily-temp">36/22°C</span>
+                  </li>
+                  <li class="flex justify-between items-center mb-5"> 
+                      <span class="daily-date">Tue</span>
+                      <img class="daily-icon" src="./images/overcast.png" alt="Sunny" style="width: 20px; height: 20px;"> 
+                      <span class="daily-temp">37/21°C</span>
+                  </li>
+                  <li class="flex justify-between items-center mb-5"> 
+                      <span class="daily-date">Wed</span>
+                      <img class="daily-icon" src="./images/clear.png" alt="Clear" style="width: 20px; height: 20px;"> 
+                      <span class="daily-temp">37/21°C</span>
+                  </li>
+                  <li class="flex justify-between items-center mb-5"> 
+                      <span class="daily-date">Thu</span>
+                      <img class="daily-icon" src="./images/cloudy.png" alt="Cloudy" style="width: 20px; height: 20px;"> 
+                      <span class="daily-temp">37/21°C</span>
+                  </li>
+                  <li class="flex justify-between items-center mb-5"> 
+                      <span class="daily-date">Fri</span>
+                      <img class="daily-icon" src="./images/cloudy.png" alt="Cloudy" style="width: 20px; height: 20px;"> 
+                      <span class="daily-temp">37/21°C</span>
+                  </li>
+                  <li class="flex justify-between items-center mb-5"> 
+                      <span class="daily-date">Sat</span>
+                      <img class="daily-icon" src="./images/rainy.png" alt="Rainy" style="width: 20px; height: 20px;"> 
+                      <span class="daily-temp">37/21°C</span>
+                  </li>
+                  <li class="flex justify-between items-center mb-5"> 
+                      <span class="daily-date">Sun</span>
+                      <img class="daily-icon" src="./images/rainy.png" alt="Rainy" style="width: 20px; height: 20px;"> 
+                      <span class="daily-temp">37/21°C</span>
+                  </li>
+                </ul>
+
+
+                <!-- Recent Cities Dropdown -->
+        <div class="relative inline-block ml-4 w-48">
+          <select id="recentCities" class="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              <option value="" disabled selected>Select a recent city</option>
+          </select>
+      </div>
+          </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

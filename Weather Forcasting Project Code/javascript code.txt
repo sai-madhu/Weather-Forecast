@@ -1,0 +1,162 @@
+const apiKey = '024db7d61137fef3237f045c64b32907';  
+const searchButton = document.getElementById('searchButton');
+const cityInput = document.getElementById('cityInput');
+const cityName = document.getElementById('city');
+const temperature = document.getElementById('temperature');
+const weatherIcon = document.getElementById('weather-icon');
+const rainChance = document.getElementById('rainChance');
+const realFeel = document.getElementById('realFeel');
+const wind = document.getElementById('wind');
+const uvIndex = document.getElementById('uvIndex');
+const hourlyForecastContainer = document.getElementById('hourly-forecast-container');
+
+searchButton.addEventListener('click', async () => {
+    const city = cityInput.value.trim();
+    if (city) {
+        const weatherData = await fetchWeatherData(city);
+        updateWeatherDisplay(weatherData);
+    } else {
+        alert("Please enter a city name.");
+    }
+});
+
+// Fetch weather data from OpenWeatherMap
+async function fetchWeatherData(city) {
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error('City not found');
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        alert('Error fetching data: ' + error.message);
+        return null;
+    }
+}
+
+// Update the page with the fetched weather data
+function updateWeatherDisplay(data) {
+    if (!data) return;
+
+    const main = data.main;
+    const weather = data.weather[0];
+    const windData = data.wind;
+
+    // Update current city and weather data
+    cityName.textContent = data.name;
+    temperature.textContent = `${Math.round(main.temp)}°`;
+    weatherIcon.src = `https://openweathermap.org/img/wn/${weather.icon}.png`;
+    rainChance.textContent = `Chance of rain: ${weather.main === 'Rain' ? 80 : 0}%`;
+    realFeel.textContent = `${Math.round(main.feels_like)}°`;
+    wind.textContent = `${windData.speed} km/h`;
+    uvIndex.textContent = getUVIndex(data);
+
+    // Update hourly forecast (Note: You may need to use a different endpoint for hourly forecasts)
+    updateHourlyForecast();
+}
+
+// For now, using placeholder data for hourly forecast
+function updateHourlyForecast() {
+    const hourlyData = [
+        { time: '6:00 AM', icon: 'cloudy', temp: 25 },
+        { time: '9:00 AM', icon: 'cloudy', temp: 28 },
+        { time: '12:00 PM', icon: 'sunny', temp: 33 },
+        { time: '3:00 PM', icon: 'sunny', temp: 34 },
+        { time: '6:00 PM', icon: 'clear', temp: 32 },
+        { time: '9:00 PM', icon: 'cloudy', temp: 30 }
+    ];
+
+    hourlyForecastContainer.innerHTML = '';
+    hourlyData.forEach(hour => {
+        const forecastElement = document.createElement('div');
+        forecastElement.classList.add('hourly-forecast');
+
+        forecastElement.innerHTML = `
+            <p class="hourly-time">${hour.time}</p>
+            <img class="hourly-icon" src="./images/${hour.icon}.png" alt="${hour.icon}">
+            <p class="hourly-temp">${hour.temp}°C</p>
+        `;
+        hourlyForecastContainer.appendChild(forecastElement);
+    });
+}
+
+// Get UV Index (Placeholder: This would be fetched from a UV endpoint)
+function getUVIndex(data) {
+    return Math.round(Math.random() * 10); // Placeholder for UV index
+}
+
+// Store recent cities in local storage
+let recentCities = JSON.parse(localStorage.getItem('recentCities')) || [];
+
+
+
+const recentCitiesDropdown = document.getElementById('recentCities');
+
+// Function to update the recent cities dropdown
+function updateRecentCitiesDropdown() {
+    recentCitiesDropdown.innerHTML = '<option value="" disabled selected>Select a recent city</option>';
+    recentCities.forEach(city => {
+        const option = document.createElement('option');
+        option.value = city;
+        option.textContent = city;
+        recentCitiesDropdown.appendChild(option);
+    });
+}
+
+// Event listener for recent city selection
+recentCitiesDropdown.addEventListener('change', () => {
+    const selectedCity = recentCitiesDropdown.value;
+    if (selectedCity) {
+        // Update the input field with the selected city
+        cityInput.value = selectedCity;
+        // You can call your weather data fetching function here
+        console.log(`Selected city: ${selectedCity}`);
+        // Example: fetchWeatherData(selectedCity);
+    }
+});
+
+// Function to add a new city to the recent cities list
+function addRecentCity(city) {
+    // Avoid adding duplicate cities
+    if (!recentCities.includes(city)) {
+        recentCities.push(city);
+        if (recentCities.length > 5) {
+            recentCities.shift(); // Keep only the last 5 cities
+        }
+        localStorage.setItem('recentCities', JSON.stringify(recentCities));
+        updateRecentCitiesDropdown();
+    }
+}
+
+// Initialize recent cities dropdown on page load
+updateRecentCitiesDropdown();
+const locationButton = document.getElementById('location-btn');
+
+locationButton.addEventListener('click', async () => {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            const { latitude, longitude } = position.coords;
+
+            const apiKey = '024db7d61137fef3237f045c64b32907'; // Replace with your OpenWeatherMap API key
+            const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Error fetching location weather');
+                const data = await response.json();
+
+                // Update the weather display with the fetched data
+                updateWeatherDisplay(data);
+            } catch (error) {
+                alert('Error retrieving weather for your location: ' + error.message);
+            }
+        }, () => {
+            alert('Unable to retrieve your location. Please check your permissions.');
+        });
+    } else {
+        alert('Geolocation is not supported by this browser.');
+    }
+});
